@@ -13,7 +13,7 @@ const NavBar = observer(() => {
     <Navbar bg="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand>
-          <Link to={MAIN_ROUTE} style={styleLink}>
+          <Link to={MAIN_ROUTE} style={{ fontSize: "16px", ...styleLink }}>
             На главную
           </Link>
         </Navbar.Brand>
