@@ -53,7 +53,8 @@ export class ArchivariusService {
       word: string,
       area: string
     ) => {
-      const url = `http://${serverIp}:${serverPort}/search?q="${word}"&z=${area}&sort=rate&sortdir=asc`;
+      const wordToPlus = word.split(" ").join("+");
+      const url = `http://${serverIp}:${serverPort}/search?q="${wordToPlus}"&z=${area}&sort=rate&sortdir=asc`;
       const $ = await axiosUrlUtils(url);
       const fullPaths = await prepareFullPathsUtils($);
       const fullPathsResult = fullPaths.map((path) => ({
