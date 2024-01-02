@@ -1,14 +1,12 @@
-import { NavLink } from "react-router-dom";
-import { Container } from 'react-bootstrap';
-
+import { Container } from "react-bootstrap";
+import Headline from "../components/IU/Headline";
 
 const MainPage = () => {
-    return <Container>
-        MainPage
-       {/*  <div><NavLink to="/arch-first">Go to ArchFirstPage</NavLink></div>
-        <div><NavLink to="/arch-second">Go to ArchSecondPage</NavLink></div>
-        <div><NavLink to="/arch-third">Go to ArchThirdPage</NavLink></div> */}
+  return (
+    <Container>
+      <Headline>Главная страница</Headline>
     </Container>
-}
+  );
+};
 
 export default MainPage;

@@ -1,7 +1,7 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { MAIN_ROUTE, ARCH_FIRST_ROUTE } from "../utils/consts";
+import { MAIN_ROUTE, ARCH_FIRST_ROUTE, REPORT_ROUTE } from "../utils/consts";
 
 const styleLink = {
   textDecoration: "none",
@@ -23,6 +23,9 @@ const NavBar = observer(() => {
             style={{ marginLeft: "10px", ...styleLink }}
           >
             Архивариус
+          </Link>
+          <Link to={REPORT_ROUTE} style={{ marginLeft: "20px", ...styleLink }}>
+            Отчет
           </Link>
         </Nav>
       </Container>
