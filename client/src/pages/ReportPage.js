@@ -58,7 +58,7 @@ const ReportPage = () => {
     <Container>
       <Headline>Отчет</Headline>
       <h3 style={{ marginTop: "25px" }}>
-        Скачать последний отчет из БД в файлы txt:
+        Сохранить последний отчет из БД в файлы txt:
       </h3>
 
       <div
@@ -77,9 +77,7 @@ const ReportPage = () => {
         <Button onClick={reportWordsFailRecordHandler}>
           Не обнаруженные кл.слова («ковычках»,)
         </Button>
-        <Button onClick={reportDescriptionHandler}>
-          Область поиска, когда
-        </Button>
+        <Button onClick={reportDescriptionHandler}>Область поиска</Button>
       </div>
       <div
         style={{

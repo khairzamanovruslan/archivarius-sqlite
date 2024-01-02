@@ -1,7 +1,9 @@
 import { useContext, useState } from "react";
-import { Button, Container, Table } from "react-bootstrap";
+import { Button, Container, ListGroup, Table } from "react-bootstrap";
 import Headline from "../components/IU/Headline";
 import { Context } from "../index";
+import { useHttpArchivariusReport } from "../http/archivariusAPI";
+import Loader from "../components/IU/Loader";
 
 const ArchThirdPage = () => {
   const { archivariusResult } = useContext(Context);
@@ -16,6 +18,34 @@ const ArchThirdPage = () => {
   );
   const pathResult = archivariusResult.pathResult;
   console.log("pathResult", pathResult);
+  const { request, loading } = useHttpArchivariusReport();
+
+  const [resultDownload, setResultDownload] = useState([]);
+
+  const reportPathsHandler = async () => {
+    request("/archivarius/report-paths").then((data) => {
+      setResultDownload(data);
+    });
+  };
+  const reportWordsSuccessRecordHandler = async () => {
+    request("/archivarius/report-words-success-record").then((data) => {
+      setResultDownload(data);
+    });
+  };
+  const reportWordsFailRecordHandler = async () => {
+    request("/archivarius/report-words-fail-record").then((data) => {
+      setResultDownload(data);
+    });
+  };
+  const reportDescriptionHandler = async () => {
+    request("/archivarius/report-description").then((data) => {
+      setResultDownload(data);
+    });
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <Container>
@@ -24,24 +54,46 @@ const ArchThirdPage = () => {
         Область поиска: {optionTitle}
       </p>
       <p style={{ marginTop: "10px", marginBottom: "10px" }}>
-        Количество поисковых слов: {wordCount} шт.
+        Количество ключевых слов: {wordCount} шт.
       </p>
       <p style={{ marginTop: "10px", marginBottom: "10px" }}>Дата: {date}</p>
-      <p>{`Примечание: если количество найденных файлов >= 1000, тогда поисковое слово прогоняем в ручную!`}</p>
-      {/* <div>
-            <Button style={{ marginTop: "10px" }}>Отчет полных путей до файлов</Button>
-        </div>
-        <div>
-            <Button style={{ marginTop: "20px" }}>Отчет найденных слов</Button>
-        </div>
-        <div>
-            <Button style={{ marginTop: "20px", marginBottom: '20px' }}>Отчет НЕ найденных слов</Button>
-        </div> */}
+      <p
+        style={{ marginTop: "10px", marginBottom: "10px" }}
+      >{`Примечание: если количество найденных файлов >= 1000, тогда поисковое слово прогоняем в ручную!`}</p>
+      <p>{`Примечание: во вкладке "Отчет", можно увидеть последний результат.`}</p>
+
+      <h3 style={{ marginTop: "55px" }}>Сохранить отчеты из БД в файлы txt:</h3>
+      <div
+        style={{
+          marginTop: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "20px",
+        }}
+      >
+        <Button onClick={reportPathsHandler}>Полные пути до файлов</Button>
+        <Button onClick={reportWordsSuccessRecordHandler}>
+          Обнаруженные кл.слова («ковычках»,)
+        </Button>
+        <Button onClick={reportWordsFailRecordHandler}>
+          Не обнаруженные кл.слова («ковычках»,)
+        </Button>
+        <Button onClick={reportDescriptionHandler}>Область поиска</Button>
+      </div>
+      {resultDownload.length !== 0 ? (
+        <h4 style={{ marginTop: "25px" }}>Отчет сохранен в файл:</h4>
+      ) : null}
+      <ListGroup>
+        {resultDownload.map((item) => (
+          <ListGroup.Item>{item}</ListGroup.Item>
+        ))}
+      </ListGroup>
+      <h4 style={{ marginTop: "65px" }}>Отчет по кл.словам:</h4>
       <Table bordered hover>
         <thead>
           <tr style={{ textAlign: "center" }}>
             <th>№ п.п.</th>
-            <th>Поисковое слово</th>
+            <th>Ключевое слово</th>
             <th>Количество найденных файлов</th>
           </tr>
         </thead>
@@ -62,7 +114,7 @@ const ArchThirdPage = () => {
           onClick={() => setPathResultShow(!pathResultShow)}
           style={{ marginTop: "20px", marginBottom: "30px" }}
         >
-          {pathResultShow ? "Скрыть отчёт" : "Показать отчёт"}
+          {pathResultShow ? "Скрыть отчёт" : "Показать отчёт на странице"}
         </Button>
       </div>
       {pathResultShow && (

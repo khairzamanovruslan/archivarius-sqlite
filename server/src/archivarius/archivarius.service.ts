@@ -79,13 +79,17 @@ export class ArchivariusService {
     let final_promise = await Promise.all(fetchWord)
       .then(async () => {
         const eventDataResult = await this.EventDataRepository.findOne();
-        const wordsResult = await this.ResultWordRepository.findAll({
-          raw: true,
-        });
-        const pathsResult = await this.ResultPathRepository.findAll({
-          raw: true,
-        });
-        return { eventDataResult, wordsResult, pathsResult };
+        const wordResPrepeare = await this.ResultWordRepository.findAll();
+        const pathResPrepeare = await this.ResultPathRepository.findAll();
+        const wordResult = wordResPrepeare.map((item) => ({
+          word: item.dataValues.word,
+          quantity: item.dataValues.quantity,
+        }));
+        const pathResult = pathResPrepeare.map((item) => ({
+          fullPath: item.dataValues.fullPath,
+          word: item.dataValues.word,
+        }));
+        return { eventDataResult, wordResult, pathResult };
       })
       .catch((e) => {
         console.log("Promise.all catch");
@@ -320,27 +324,27 @@ export class ArchivariusService {
       const directoryForSavingReports = await mkdirDesktopUtils();
       const fileName = path.resolve(
         String(directoryForSavingReports),
-        `Область поиска, когда искал.txt`
+        `область поиска.txt`
       );
-      const eventData = await this.EventDataRepository.findAll({
-        raw: true,
-        attributes: ["optionTitle", "createdAt"],
-      });
+      const eventData = await this.EventDataRepository.findAll({ raw: true });
+      console.log("eventData", !eventData);
+      let result = "";
+      if (!eventData.length) {
+        result = "";
+      } else {
+        result = `${eventData[0].optionTitle}\n${
+          eventData[0].createdAt.split(".")[0]
+        }`;
+      }
       const writeFile = () =>
         new Promise((resolve, reject) => {
-          fs.writeFile(
-            fileName,
-            `${eventData[0].optionTitle}\n${
-              eventData[0].createdAt.split(".")[0]
-            }`,
-            (err) => {
-              if (err) reject(err);
-              else {
-                console.log(`Файл успешно записан - ${fileName}`);
-                return resolve(fileName);
-              }
+          fs.writeFile(fileName, result, (err) => {
+            if (err) reject(err);
+            else {
+              console.log(`Файл успешно записан - ${fileName}`);
+              return resolve(fileName);
             }
-          );
+          });
         });
       const fileNameResult = await writeFile();
       return [fileNameResult];
